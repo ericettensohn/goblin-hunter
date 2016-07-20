@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Goblin Hunter!</title>
+</head>
+<body>
+
+<script type="text/javascript">
+	
+// create the canvas tag with js
+var canvas = document.createElement("canvas");
+
+// create a context
+var context = canvas.getContext("2d");
+
+// give the canvas tag some substance
+canvas.width = 512;
+canvas.height = 480;
+
+// put canvas in the DOM
+document.body.appendChild(canvas);
+
+var scoreBoard = document.createElement("scoreBoard");
+
+scoreBoard.innerHTML = "<p>Score: <span id='scoreNum'></span></p>" 
+document.body.appendChild(scoreBoard);
+
+
+
+var bgImage = new Image();
+bgImage.src = "background.png";
+
+var hero = new Image();
+hero.src = "hero.png";
+var heroLocation = {
+	x: 100,
+	y: 100
+};
+
+var goblins = [];
+
+function goblinMaker(num) {
+
+	goblins[num] = new Image();
+	goblins[num].src = "monster.png";
+	goblins[num].location = {
+		x: 150,
+		y: 100
+	};
+
+};
+
+goblinMaker(0);
+goblinMaker(1);
+
+
+var spider = new Image();
+spider.src = "spider.png";
+var spiderLocation = {
+	x: 200,
+	y: 200
+}
+
+// hold keycodes currently down in array
+var keysDown = [];
+
+// Make the hero move
+addEventListener('keydown', function(event) {
+	keysDown[event.keyCode] = true;
+
+});
+
+addEventListener('keyup', function(event) {
+	delete keysDown[event.keyCode];
+
+});
+
+
+
+function update(goblinNum) {
+	if(39 in keysDown && heroLocation.x < canvas.width -70) {
+		// move right
+		heroLocation.x += 4;
+	};
+	if(37 in keysDown && heroLocation.x > 40) {
+		// move right
+		heroLocation.x -= 4;
+	};
+	if(40 in keysDown && heroLocation.y < 415) {
+		// move right
+		heroLocation.y += 4;
+	};
+	if(38 in keysDown  && heroLocation.y > 30) {
+		// move right
+		heroLocation.y -= 4;
+	};
+
+	collisionDetector(goblinNum);
+	// if (
+	// 	(heroLocation.x <= goblins[goblinNum].location.x + 32) 
+	// 	&& (heroLocation.y <= goblins[goblinNum].location.y + 32)
+	// 	&& (goblins[goblinNum].location.x <= heroLocation.x + 32)
+	// 	&& (goblins[goblinNum].location.y <= heroLocation.y + 32)
+	// 	) {
+	// 		reset(goblinNum);
+	// 	}
+
+	// if (
+	// 	(heroLocation.x <= goblin1Location.x + 32) 
+	// 	&& (heroLocation.y <= goblin1Location.y + 32)
+	// 	&& (goblin1Location.x <= heroLocation.x + 32)
+	// 	&& (goblin1Location.y <= heroLocation.y + 32)
+	// 	) {
+	// 		reset();
+	// 	}
+
+	// 	if (
+	// 	(heroLocation.x <= goblin2Location.x + 32) 
+	// 	&& (heroLocation.y <= goblin2Location.y + 32)
+	// 	&& (goblin2Location.x <= heroLocation.x + 32)
+	// 	&& (goblin2Location.y <= heroLocation.y + 32)
+	// 	) {
+	// 		reset2();
+	// 	}
+
+		if (
+			(heroLocation.x <= spiderLocation.x + 32) 
+			&& (heroLocation.y <= spiderLocation.y + 32)
+			&& (spiderLocation.x <= heroLocation.x + 32)
+			&& (spiderLocation.y <= heroLocation.y + 32)
+		) {
+			spiderDeath();
+		}
+}
+
+function collisionDetector(goblinNum) {
+	if (
+		(heroLocation.x <= goblins[goblinNum].location.x + 32) 
+		&& (heroLocation.y <= goblins[goblinNum].location.y + 32)
+		&& (goblins[goblinNum].location.x <= heroLocation.x + 32)
+		&& (goblins[goblinNum].location.y <= heroLocation.y + 32)
+		) {
+			reset(goblinNum);
+		}
+}
+
+
+
+var counter = 0;
+
+function reset(gobNum) {
+	goblins[gobNum].location.x = Math.random() * 480;
+	goblins[gobNum].location.y = Math.random() * 448;
+	counter++;
+	scoreNum.innerHTML = counter;
+}
+
+
+function spiderDeath() {
+	hero.src = "deadhero.png";
+}
+
+// left: 37 up: 38 right: 39 down: 40
+
+// if the hero runs into the goblin, do x
+
+
+// make the goblin reappear after the hero captures him
+
+// var goblinMoves = [];
+
+// function goblinMover() {
+// 	goblinMoves[0] = goblinLocation.x += Math.random() * 10;
+// 	goblinMoves[1] = goblinLocation.y += Math.random() * 10;
+// 	goblinMoves[2] = goblinLocation.x -= Math.random() * 10;
+// 	goblinMoves[3] = goblinLocation.y -= Math.random() * 10;
+
+// 	var randomMove = (Math.floor(Math.random() * 10) - 6);
+// 	goblinMoves[randomMove] = goblinLocation;
+// }
+
+
+function draw() {
+	update(0);
+	// update(1);
+	context.drawImage(bgImage, 0, 0);
+	context.drawImage(hero, heroLocation.x, heroLocation.y);
+	context.drawImage(goblins[0], goblins[0].location.x, goblins[0].location.y);
+	// context.drawImage(goblins[1], goblins[1].location.x, goblins[1].location.y);
+	context.drawImage(spider, spiderLocation.x, spiderLocation.y);
+	requestAnimationFrame(draw);
+	// goblinMover();
+}
+
+
+draw();
+
+
+
+
+
+</script>
+
+</body>
+</html>
